@@ -133,7 +133,9 @@ export function MagazineLayout({ pages, children }: MagazineLayoutProps) {
 
   useEffect(() => {
     let touchStartY = 0;
+    let touchStartX = 0;
     let touchScrollable: HTMLElement | null = null;
+    let willSwipePage = false;
 
     const getScrollable = (target: EventTarget | null): HTMLElement | null => {
       let el = target as HTMLElement | null;
@@ -149,31 +151,45 @@ export function MagazineLayout({ pages, children }: MagazineLayoutProps) {
 
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
       touchScrollable = getScrollable(e.target);
+      willSwipePage = false;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const dy = touchStartY - e.touches[0].clientY;
+      const dx = touchStartX - e.touches[0].clientX;
+      if (Math.abs(dy) <= Math.abs(dx) || Math.abs(dy) < 8) return;
+
+      if (!touchScrollable) {
+        willSwipePage = true;
+        e.preventDefault();
+      } else {
+        const atBottom =
+          touchScrollable.scrollTop + touchScrollable.clientHeight >=
+          touchScrollable.scrollHeight - 5;
+        const atTop = touchScrollable.scrollTop <= 5;
+        if ((dy > 0 && atBottom) || (dy < 0 && atTop)) {
+          willSwipePage = true;
+          e.preventDefault();
+        }
+      }
     };
 
     const handleTouchEnd = (e: TouchEvent) => {
       if (isAnimating.current) return;
       const delta = touchStartY - e.changedTouches[0].clientY;
-      if (Math.abs(delta) < 50) return;
-
-      if (touchScrollable) {
-        const atBottom =
-          touchScrollable.scrollTop + touchScrollable.clientHeight >=
-          touchScrollable.scrollHeight - 5;
-        const atTop = touchScrollable.scrollTop <= 5;
-        if (delta > 0 && !atBottom) return;
-        if (delta < 0 && !atTop) return;
-      }
-
+      if (Math.abs(delta) < 50 || !willSwipePage) return;
       if (delta > 0) goToPage(Math.min(currentPage + 1, pages.length - 1));
       else goToPage(Math.max(currentPage - 1, 0));
     };
 
     window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd, { passive: true });
     return () => {
       window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [currentPage, goToPage, pages.length]);
@@ -182,7 +198,7 @@ export function MagazineLayout({ pages, children }: MagazineLayoutProps) {
 
   return (
     <MagazineContext.Provider value={{ currentPage, goToPage }}>
-      <div className="relative w-screen h-screen overflow-hidden">
+      <div className="relative w-screen overflow-hidden" style={{ height: "100dvh" }}>
         {/* Animated gradient background — shared across all pages */}
         <BackgroundGradient />
 
@@ -195,6 +211,7 @@ export function MagazineLayout({ pages, children }: MagazineLayoutProps) {
           style={{ perspective: "1200px" }}
         >
           <AnimatePresence
+            initial={false}
             mode="wait"
             custom={direction}
             onExitComplete={() => {
