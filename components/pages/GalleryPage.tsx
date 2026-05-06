@@ -35,7 +35,7 @@ const GALLERY_ITEMS = [
 
 const COMPARISONS = [
   { beforeSrc: "/ba-1-before.jpg", afterSrc: "/ba-1-after.jpg", label: "Highlights" },
-  { beforeSrc: "/ba-2-before.jpg", afterSrc: "/ba-2-after.jpg", label: "Precision Cut" },
+  { beforeSrc: "/ba-2-after.jpg", afterSrc: "/ba-2-before.jpg", label: "Precision Cut" },
   { beforeSrc: "/ba-3-before.jpg", afterSrc: "/ba-3-after.jpg", label: "Glossing" },
   { beforeSrc: "/ba-4-before.jpg", afterSrc: "/ba-4-after.jpg", label: "Balayage" },
 ];
@@ -342,13 +342,11 @@ export function GalleryPage() {
           transition={{ duration: 0.25 }}
           className="fixed inset-0 z-[200] md:hidden flex flex-col"
           style={{ background: "rgba(10,8,7,0.96)" }}
-          onClick={() => setLightbox(null)}
         >
           {/* Header */}
           <div
             className="flex items-center justify-between px-5 py-4 flex-shrink-0"
             style={{ borderBottom: "1px solid rgba(201,160,64,0.15)" }}
-            onClick={(e) => e.stopPropagation()}
           >
             <span
               className="text-sm tracking-wider"
@@ -356,21 +354,10 @@ export function GalleryPage() {
             >
               {lightbox.label}
             </span>
-            <button
-              onClick={() => setLightbox(null)}
-              className="w-8 h-8 flex items-center justify-center rounded-full"
-              style={{ background: "rgba(201,160,64,0.15)", color: "rgba(255,240,220,0.8)" }}
-              aria-label="Schließen"
-            >
-              ✕
-            </button>
           </div>
 
           {/* Comparison — full remaining height */}
-          <div
-            className="flex-1 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="flex-1 relative">
             <ImageComparison className="w-full h-full" enableHover>
               <ImageComparisonImage position="left" src={lightbox.afterSrc} alt="Nachher" />
               <ImageComparisonImage position="right" src={lightbox.beforeSrc} alt="Vorher" />
@@ -397,14 +384,20 @@ export function GalleryPage() {
             </ImageComparison>
           </div>
 
-          {/* Hint */}
-          <p
-            className="text-center py-4 text-[11px] tracking-widest flex-shrink-0"
-            style={{ color: "rgba(201,160,64,0.5)", fontFamily: "var(--font-space-grotesk)" }}
-            onClick={(e) => e.stopPropagation()}
+          {/* Close button — clearly below the image, safe from slider */}
+          <button
+            onClick={() => setLightbox(null)}
+            className="flex-shrink-0 w-full py-5 flex items-center justify-center gap-2 text-sm tracking-widest"
+            style={{
+              background: "rgba(201,160,64,0.1)",
+              borderTop: "1px solid rgba(201,160,64,0.2)",
+              color: "rgba(255,240,220,0.85)",
+              fontFamily: "var(--font-space-grotesk)",
+            }}
+            aria-label="Schließen"
           >
-            REGLER ZIEHEN · TIPPEN ZUM SCHLIESSEN
-          </p>
+            ✕ &nbsp; SCHLIESSEN
+          </button>
         </motion.div>
       )}
     </div>
