@@ -45,10 +45,24 @@ const STACK_ITEMS: ServiceItem[] = SERVICES.map((s, i) => ({ id: i, ...s }));
 
 export function ServicesPage() {
   const [hasEntered, setHasEntered] = useState(false);
+  const [cardDims, setCardDims] = useState({ width: 340, height: 420, spread: 44, overlap: 0.46, maxVisible: 7 });
 
   useEffect(() => {
     const timer = setTimeout(() => setHasEntered(true), 100);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const update = () => {
+      const mobile = window.innerWidth < 768;
+      setCardDims(mobile
+        ? { width: Math.min(240, window.innerWidth - 48), height: 300, spread: 22, overlap: 0.52, maxVisible: 3 }
+        : { width: 340, height: 420, spread: 44, overlap: 0.46, maxVisible: 7 }
+      );
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   return (
@@ -109,11 +123,11 @@ export function ServicesPage() {
         >
           <CardStack<ServiceItem>
             items={STACK_ITEMS}
-            cardWidth={340}
-            cardHeight={420}
-            maxVisible={7}
-            spreadDeg={44}
-            overlap={0.46}
+            cardWidth={cardDims.width}
+            cardHeight={cardDims.height}
+            maxVisible={cardDims.maxVisible}
+            spreadDeg={cardDims.spread}
+            overlap={cardDims.overlap}
             loop
             showDots
             renderCard={(item, { active }) => (
