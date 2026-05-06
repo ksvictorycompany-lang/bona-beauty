@@ -75,7 +75,7 @@ export function SpotlightServiceCard({ index, title, description, priceRange, ic
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col p-8">
+      <div className="relative z-10 h-full flex flex-col p-5 md:p-8">
         <span
           className="text-xs tracking-widest"
           style={{ color: "rgba(201,160,64,0.55)", fontFamily: "var(--font-space-grotesk)" }}
@@ -83,35 +83,35 @@ export function SpotlightServiceCard({ index, title, description, priceRange, ic
           0{index + 1}
         </span>
 
-        <div className="mt-5">{icon}</div>
+        <div className="mt-3 md:mt-5">{icon}</div>
 
         <h3
-          className="mt-4 text-2xl leading-tight"
+          className="mt-3 md:mt-4 text-xl md:text-2xl leading-tight"
           style={{ fontFamily: "var(--font-cormorant)", fontWeight: 700, color: "#1C0A08" }}
         >
           {title}
         </h3>
 
         <p
-          className="mt-3 text-sm leading-relaxed"
+          className="mt-2 md:mt-3 text-xs md:text-sm leading-relaxed"
           style={{ color: "rgba(28,10,8,0.55)", fontFamily: "var(--font-space-grotesk)" }}
         >
           {description}
         </p>
 
         <div
-          className="mt-auto pt-5 flex items-center justify-between"
+          className="mt-auto pt-3 md:pt-5 flex items-center justify-between"
           style={{ borderTop: "1px solid rgba(201,160,64,0.15)" }}
         >
           <span
-            className="text-sm font-semibold"
+            className="text-xs md:text-sm font-semibold"
             style={{ color: "#C9A040", fontFamily: "var(--font-space-grotesk)" }}
           >
             {priceRange}
           </span>
           <button
             onClick={() => goToPage(4)}
-            className="text-xs tracking-wider px-4 py-2 rounded-full transition-all duration-200 hover:opacity-80"
+            className="text-xs tracking-wider px-3 md:px-4 py-1.5 md:py-2 rounded-full transition-all duration-200 hover:opacity-80"
             style={{
               background: "rgba(196,102,90,0.1)",
               color: "#C4665A",
