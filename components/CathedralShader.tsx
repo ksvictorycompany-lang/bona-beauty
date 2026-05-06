@@ -32,12 +32,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     o = tanh(o / 5e1);
 
-    // Bona Beauty color grade: dark warm → amber gold → cream highlight
+    // Bona Beauty color grade: dark warm → amber gold → cream highlight (reduced ~25%)
     float luma = dot(o.rgb, vec3(0.299, 0.587, 0.114));
-    vec3 shadows = vec3(0.11, 0.04, 0.03);
-    vec3 mids    = vec3(0.79, 0.50, 0.22);
-    vec3 highs   = vec3(1.00, 0.91, 0.78);
-    o.rgb = mix(mix(shadows, mids, luma * 1.8), highs, pow(luma, 2.5));
+    vec3 shadows = vec3(0.08, 0.03, 0.02);
+    vec3 mids    = vec3(0.58, 0.37, 0.16);
+    vec3 highs   = vec3(0.78, 0.70, 0.56);
+    o.rgb = mix(mix(shadows, mids, luma * 1.35), highs, pow(luma, 3.2));
 
     fragColor = vec4(o.rgb, 1.0);
 }

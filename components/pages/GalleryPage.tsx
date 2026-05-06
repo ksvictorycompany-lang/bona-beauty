@@ -61,15 +61,26 @@ const TESTIMONIALS = [
   },
 ];
 
+type ComparisonItem = typeof COMPARISONS[number];
+
 export function GalleryPage() {
   const [hasEntered, setHasEntered] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [lightbox, setLightbox] = useState<ComparisonItem | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setHasEntered(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // Close lightbox on Escape
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   return (
     <div className="relative w-full h-full overflow-y-auto overflow-x-hidden">
@@ -143,19 +154,20 @@ export function GalleryPage() {
                 className="flex flex-col gap-2"
               >
                 <div
-                  className="relative rounded-xl overflow-hidden"
+                  className="relative rounded-xl overflow-hidden md:cursor-default cursor-pointer"
                   style={{ aspectRatio: "3 / 4" }}
+                  onClick={() => { if (window.innerWidth < 768) setLightbox(item); }}
                 >
                   <ImageComparison className="w-full h-full" enableHover>
                     <ImageComparisonImage
                       position="left"
-                      src={item.beforeSrc}
-                      alt="Vorher"
+                      src={item.afterSrc}
+                      alt="Nachher"
                     />
                     <ImageComparisonImage
                       position="right"
-                      src={item.afterSrc}
-                      alt="Nachher"
+                      src={item.beforeSrc}
+                      alt="Vorher"
                     />
                     {/* Branded slider */}
                     <ImageComparisonSlider className="bg-white/20 backdrop-blur-[2px]">
@@ -320,6 +332,81 @@ export function GalleryPage() {
           </div>
         </motion.div>
       </div>
+
+      {/* ── Mobile lightbox ── (md and above: never shown) */}
+      {lightbox && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-[200] md:hidden flex flex-col"
+          style={{ background: "rgba(10,8,7,0.96)" }}
+          onClick={() => setLightbox(null)}
+        >
+          {/* Header */}
+          <div
+            className="flex items-center justify-between px-5 py-4 flex-shrink-0"
+            style={{ borderBottom: "1px solid rgba(201,160,64,0.15)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span
+              className="text-sm tracking-wider"
+              style={{ color: "rgba(255,240,220,0.8)", fontFamily: "var(--font-space-grotesk)" }}
+            >
+              {lightbox.label}
+            </span>
+            <button
+              onClick={() => setLightbox(null)}
+              className="w-8 h-8 flex items-center justify-center rounded-full"
+              style={{ background: "rgba(201,160,64,0.15)", color: "rgba(255,240,220,0.8)" }}
+              aria-label="Schließen"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Comparison — full remaining height */}
+          <div
+            className="flex-1 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ImageComparison className="w-full h-full" enableHover>
+              <ImageComparisonImage position="left" src={lightbox.afterSrc} alt="Nachher" />
+              <ImageComparisonImage position="right" src={lightbox.beforeSrc} alt="Vorher" />
+              <ImageComparisonSlider className="bg-white/20 backdrop-blur-[2px]">
+                <div
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center"
+                  style={{ background: "#C4665A", border: "2px solid rgba(255,255,255,0.55)" }}
+                >
+                  <ChevronsLeftRight className="w-4 h-4 text-white" />
+                </div>
+              </ImageComparisonSlider>
+              <div
+                className="absolute top-4 left-4 z-20 px-2.5 py-1 rounded-full text-[11px] tracking-wider"
+                style={{ background: "rgba(196,102,90,0.55)", backdropFilter: "blur(4px)", color: "rgba(255,255,255,0.95)", fontFamily: "var(--font-space-grotesk)" }}
+              >
+                Nachher
+              </div>
+              <div
+                className="absolute top-4 right-4 z-20 px-2.5 py-1 rounded-full text-[11px] tracking-wider"
+                style={{ background: "rgba(10,8,7,0.55)", backdropFilter: "blur(4px)", color: "rgba(255,255,255,0.7)", fontFamily: "var(--font-space-grotesk)" }}
+              >
+                Vorher
+              </div>
+            </ImageComparison>
+          </div>
+
+          {/* Hint */}
+          <p
+            className="text-center py-4 text-[11px] tracking-widest flex-shrink-0"
+            style={{ color: "rgba(201,160,64,0.5)", fontFamily: "var(--font-space-grotesk)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            REGLER ZIEHEN · TIPPEN ZUM SCHLIESSEN
+          </p>
+        </motion.div>
+      )}
     </div>
   );
 }
