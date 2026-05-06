@@ -35,7 +35,7 @@ const GALLERY_ITEMS = [
 
 const COMPARISONS = [
   { beforeSrc: "/ba-1-before.jpg", afterSrc: "/ba-1-after.jpg", label: "Highlights" },
-  { beforeSrc: "/ba-2-after.jpg", afterSrc: "/ba-2-before.jpg", label: "Precision Cut" },
+  { beforeSrc: "/ba-2-before.jpg", afterSrc: "/ba-2-after.jpg", label: "Precision Cut" },
   { beforeSrc: "/ba-3-before.jpg", afterSrc: "/ba-3-after.jpg", label: "Glossing" },
   { beforeSrc: "/ba-4-before.jpg", afterSrc: "/ba-4-after.jpg", label: "Balayage" },
 ];
@@ -371,15 +371,15 @@ export function GalleryPage() {
               </ImageComparisonSlider>
               <div
                 className="absolute top-4 left-4 z-20 px-2.5 py-1 rounded-full text-[11px] tracking-wider"
-                style={{ background: "rgba(196,102,90,0.55)", backdropFilter: "blur(4px)", color: "rgba(255,255,255,0.95)", fontFamily: "var(--font-space-grotesk)" }}
-              >
-                Nachher
-              </div>
-              <div
-                className="absolute top-4 right-4 z-20 px-2.5 py-1 rounded-full text-[11px] tracking-wider"
                 style={{ background: "rgba(10,8,7,0.55)", backdropFilter: "blur(4px)", color: "rgba(255,255,255,0.7)", fontFamily: "var(--font-space-grotesk)" }}
               >
                 Vorher
+              </div>
+              <div
+                className="absolute top-4 right-4 z-20 px-2.5 py-1 rounded-full text-[11px] tracking-wider"
+                style={{ background: "rgba(196,102,90,0.55)", backdropFilter: "blur(4px)", color: "rgba(255,255,255,0.95)", fontFamily: "var(--font-space-grotesk)" }}
+              >
+                Nachher
               </div>
             </ImageComparison>
           </div>
